@@ -24,11 +24,11 @@ cdef extern from "rir.c":
 	          char    mic_type,                            
 	          int     reflect_order)
 
-cpdef np.ndarray[np.float_t, ndim=1, mode="c"] rir(double sound_speed, double fs, 
-        np.ndarray[np.float_t, ndim=1, mode="c"] room_size,
-        np.ndarray[np.float_t, ndim=1, mode="c"] mic_pos, 
-        np.ndarray[np.float_t, ndim=1, mode="c"] src_pos,
-        np.ndarray[np.float_t, ndim=1, mode="c"] beta_arr,
+cpdef np.ndarray[np.float64_t, ndim=1, mode="c"] rir(double sound_speed, double fs, 
+        np.ndarray[np.float64_t, ndim=1, mode="c"] room_size,
+        np.ndarray[np.float64_t, ndim=1, mode="c"] mic_pos, 
+        np.ndarray[np.float64_t, ndim=1, mode="c"] src_pos,
+        np.ndarray[np.float64_t, ndim=1, mode="c"] beta_arr,
         double mic_azimuth,
         double mic_elevation,
         int    impulse_len,
@@ -36,7 +36,7 @@ cpdef np.ndarray[np.float_t, ndim=1, mode="c"] rir(double sound_speed, double fs
         char   mic_type,
         int    reflect_order):
     
-    cdef np.ndarray[np.float_t, ndim=1, mode="c"] impulse = np.zeros((impulse_len,), dtype=np.float64)
+    cdef np.ndarray[np.float64_t, ndim=1, mode="c"] impulse = np.zeros((impulse_len,), dtype=np.float64)
     comp_rir(
         sound_speed, fs, 
         room_size[0], room_size[1], room_size[2],
