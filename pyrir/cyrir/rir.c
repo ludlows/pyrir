@@ -228,4 +228,6 @@ void comp_rir(double sound_speed, double fs,
 	}
 
 	free(LPI);
+	LPI = NULL;
+	
 }
