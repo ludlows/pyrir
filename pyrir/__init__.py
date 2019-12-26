@@ -1,7 +1,8 @@
 
 import numpy as np
 
-from .microphone import Omni
+from .microphone import Omni, Cardioid, Dipole, Hypercardioid
+from .speaker import Speaker
 from .cyrir import rir
 
 

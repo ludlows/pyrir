@@ -11,7 +11,7 @@ import numbers
 class Speaker:
     """
     Speaker class
-    TODO interaction with RIR
+    
     """
     _speaker_id = 0
     def __init__(self, position, name=None):
@@ -25,14 +25,18 @@ class Speaker:
         if not all([isinstance(v, numbers.Number) for v in position]):
             raise ValueError('All the elements of microphone position should be numeric!!!')
         self._pos = tuple(position)
-        if name is None:
-            self._name = "speaker_{:%d}".format(self._speaker_id)
+        if not name:
+            self._name = "Speaker_{:d}".format(self._speaker_id)
+        else:
+            self._name = name
         self._speaker_id += 1
-        self._audio = None
 
     def get_pos(self):
         return self._pos 
 
     def get_name(self):
         return self._name 
+
+    def __str__(self):
+        return "{}_x_{:.1f}_y_{:.1f}_z_{:.1f}".format(self._name, *self._pos)
 
