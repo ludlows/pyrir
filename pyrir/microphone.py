@@ -18,12 +18,13 @@ class Microphone:
     _mic_id = 0
     def __init__(self, position, name=None):
         """
-        position: tuple (x,y,z) or list [x,y,z]
+        Args:
+            position: tuple (x,y,z) or list [x,y,z]
         """
         if len(position) != 3:
-            raise ValueError('The length of microphone position should be 3 !!!')
+            raise ValueError('The length of microphone position should be 3.')
         if not all([isinstance(v, numbers.Number) for v in position]):
-            raise ValueError('All the elements of microphone position should be numeric!!!')
+            raise ValueError('All the elements of microphone position should be numeric.')
         self._pos = tuple(position)
         if not name:
             self._name = "Mic_{:d}".format(self._mic_id)
@@ -74,13 +75,14 @@ class Hypercardioid(Microphone):
     """
     def __init__(self, position, orientation, name=None):
         """
-        position:     [x,y,z] or (x,y,z) in meter
-        orientation:  (azimuth_deg, elevation_deg) in degree
-        name       : str
+        Args:
+            position:     [x,y,z] or (x,y,z) in meter
+            orientation:  (azimuth_deg, elevation_deg) in degree
+            name       : str
         """
         super(Hypercardioid, self).__init__(position, name)
         if len(orientation) != 2:
-            raise ValueError('The length of microphone orientation should be 2 !!!')
+            raise ValueError('The length of microphone orientation should be 2 .')
         self._orient = tuple(orientation)
         self._name += "_Hypercardioid"
     
@@ -100,13 +102,14 @@ class Cardioid(Microphone):
     """
     def __init__(self, position, orientation, name=None):
         """
-        position:     [x,y,z] or (x,y,z) in meter
-        orientation:  (azimuth_deg, elevation_deg) in degree
-        name       : str
+        Args:
+            position:     [x,y,z] or (x,y,z) in meter
+            orientation:  (azimuth_deg, elevation_deg) in degree
+            name       : str
         """
         super(Cardioid, self).__init__(position, name)
         if len(orientation) != 2:
-            raise ValueError('The length of microphone orientation should be 2 !!!')   
+            raise ValueError('The length of microphone orientation should be 2 .')   
         self._orient = tuple(orientation)
         self._name += "_Cardioid"
     
@@ -126,13 +129,14 @@ class Dipole(Microphone):
     """
     def __init__(self, position, orientation, name=None):
         """
-        position:     [x,y,z] or (x,y,z) in meter
-        orientation:  (azimuth_deg, elevation_deg) in degree
-        name       : str
+        Args:
+            position:     [x,y,z] or (x,y,z) in meter
+            orientation:  (azimuth_deg, elevation_deg) in degree
+            name       : str
         """
         super(Dipole, self).__init__(position, name)
         if len(orientation) != 2:
-            raise ValueError('The length of microphone orientation should be 2 !!!')
+            raise ValueError('The length of microphone orientation should be 2 .')
         self._orient = tuple(orientation)
         self._name += "_Dipole"
 
@@ -152,13 +156,14 @@ class Subcardioid(Microphone):
     """
     def __init__(self, position, orientation, name=None):
         """
-        position:     [x,y,z] or (x,y,z) in meter
-        orientation:  (azimuth_deg, elevation_deg) in degree
-        name       : str
+        Args:
+            position:     [x,y,z] or (x,y,z) in meter
+            orientation:  (azimuth_deg, elevation_deg) in degree
+            name       : str
         """
         super(Subcardioid, self).__init__(position, name)
         if len(orientation) != 2:
-            raise ValueError('The length of microphone orientation should be 2 !!!')
+            raise ValueError('The length of microphone orientation should be 2 .')
         self._orient = tuple(orientation)
         self._name += "_Subcardioid"
     
@@ -170,4 +175,5 @@ class Subcardioid(Microphone):
     
     def __str__(self):
         return "{}_azimDeg_{:.1f}_elevDeg_{:.1f}".format(super().__str__(), *self._orient) 
+
 

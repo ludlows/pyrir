@@ -16,14 +16,15 @@ class Speaker:
     _speaker_id = 0
     def __init__(self, position, name=None):
         """
-        position : (x,y,z)
-        name     : speaker name
-        audio    : 1d numpy array 
+        Args:
+            position : (x,y,z)
+            name     : speaker name
+            audio    : 1d numpy array 
         """
         if len(position) != 3:
-            raise ValueError('The length of microphone position should be 3 !!!')
+            raise ValueError('The length of Speaker position should be 3.')
         if not all([isinstance(v, numbers.Number) for v in position]):
-            raise ValueError('All the elements of microphone position should be numeric!!!')
+            raise ValueError('All the elements of Speaker position should be numeric.')
         self._pos = tuple(position)
         if not name:
             self._name = "Speaker_{:d}".format(self._speaker_id)
