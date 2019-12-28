@@ -16,15 +16,19 @@ class Room:
     Room class
     """
     _room_id = 0
-    def __init__(self, size, name=None):
+    def __init__(self, size, order=-1, name=None):
         """
         Args: 
             size (meter):  (size_x, size_y, size_z) numerical tuple with length of 3
                             size_x (meter): Room Length along X Axis
                             size_y (meter): Room Length along Y Axis
                             size_z (meter): Room Length along Z Axis
+            order       : integer value >= -1, 
             name        : str
         """
+        if round(order) < -1:
+            raise ValueError('Reflection Order Should be an integer greater than -2')
+        self._order = round(order)
         if len(size) != 3:
             raise ValueError('The length of Room Size should be 3 !!!')
         if not all([isinstance(v, numbers.Number) for v in size]):
@@ -81,7 +85,12 @@ class Room:
             self._speakers = tuple(spks)
         else:
             raise ValueError('The speaker_or_speakers value should be Speaker object or list of Speaker Objects')
+    
+    def get_reflect_order(self):
+        return self._order 
 
+    def get_size(self):
+        return (self._size_x, self._size_y, self._size_z) 
 
     def mic_speaker_combination(self):
         """
@@ -92,22 +101,58 @@ class Room:
         comb = []
         for spk in self._speakers:
             comb.append((tuple(self._mics), spk))
-        return comb
+        return tuple(comb)
         
     def __str__(self):
         return "{}_x_{:.1f}_y_{:.1f}_z_{:.1f}".format(self._name, self._size_x, self._size_y, self._size_z)
-
-       
 
 
 class ReverbRoom(Room):
     """
     Reverb Time Room class (Defined by T60) 
     """
-    pass 
+    def __init__(self, size, rt60, order=-1, name=None):
+        """
+        Args:
+            size:  (x,y,z) size of 3 dimensions 
+            rt60:  reverberation time   (second)
+            order: reflection order (default -1), options: 
+            name: str
+        Reference: rt60: the time required for the intensity of reflected sound rays
+                         to be down 60dB from thr direct path sound ray
+        """
+        super(ReverbRoom, self).__init__(size, order, name)
+        self._name += "_Reverb"
+        if rt60 < 0:
+            raise ValueError("The RT60 (in seconds) should be >= 0.")
+        self._rt60 = rt60
+    
+    def get_rt60(self):
+        return self._rt60
+
 
 class ReflectRoom(Room):
     """
     Reflection Coefficient Room class (Defined by Beta)
     """
-    pass
+    def __init__(self, size, beta_array, order=-1, name=None):
+        """
+        Args:
+            size:        (x,y,z) size of 3 dimensions 
+            beta_array:  reflection_coefficients (betaX1, betaX2, betaY1, betaY2, betaZ1, betaZ2)
+                         each value ranges from 0 to 1, [0,1]
+            order:       reflection order (default -1), options: 
+            name:         str
+        Reference: rt60: the time required for the intensity of reflected sound rays
+                         to be down 60dB from thr direct path sound ray
+        """
+        if not len(beta_array) == 6:
+            raise ValueError("The beta array should be with a length of 6.")
+        if any([b>1 or b<0 for b in beta_array]):
+            raise ValueError('The reflection coefficient should be in the range [0,1].')
+        self._beta_arr = tuple(beta_array)
+        super(ReflectRoom, self).__init__(size, order, name)
+        self._name += "_Reflect"
+
+    def get_beta_array(self):
+        return self._beta_arr
