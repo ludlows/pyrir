@@ -1,12 +1,12 @@
 '''
 pyrir Module for Simulating Room Impulse Response
 
-author: github.com/ludlows
+author: https://github.com/ludlows
 2019-11 
 
 This program is designed with the hope that it will be useful, but WITHOUT ANY GUARANTEE.
 '''
-
+import os
 import numpy as np
 from scipy.io import wavfile
 from .microphone import Omni, Cardioid, Dipole, Hypercardioid, Subcardioid, Microphone
@@ -15,7 +15,11 @@ from .room import ReflectRoom, ReverbRoom
 from .cyrir import rir
 
 
-__all__ = ['Omni', 'Cardioid', 'Dipole', 'Hypercardioid', 'Subcardioid', 'RIR', 'Field', 'Speaker', 'ReflectRoom', 'ReverbRoom'] 
+__all__ = [
+    'Omni', 'Cardioid', 'Dipole', 'Hypercardioid', 'Subcardioid',
+    'RIR', 'Field', 'Speaker', 'ReflectRoom', 'ReverbRoom'
+    ] 
+
 
 class RIR:
     """
@@ -31,7 +35,8 @@ class RIR:
             channel_names : list or tuple of str
             speaker_name  : str
         """ 
-        self._rir_array = rir_array
+        self._rir_array = rir_array 
+        self._fs = fs
         if len(rir_array.shape == 2):
             self._n_mic, self._n_sample = rir_array.shape
         else:
@@ -42,6 +47,8 @@ class RIR:
         else:
             self._name = name
         self._rir_id += 1
+        self._mic_names = channel_names
+        self._spk_name = speaker_name
     
     def __str__(self):
         return self._name
@@ -54,20 +61,49 @@ class RIR:
     
     def apply2audio1D(self, audio1d):
         """
+        Returns the reverb audio for each mirophone
+        Args:
+            audio1d: 1d numpy float array
         """
-        pass
+        length = audio1d.shape[0]
+        ans = np.empty((self._n_mic, length))
+        for i in range(self._n_mic):
+            ans[i] = np.convolve(self._rir_array[i, :], audio1d, mode='same') 
+        return ans
 
     def apply2audio_file(self, filepath):
         """
+        Returns A list of numpy array, the length of the list is the number of auio channels
+        Args:
+            filepath: the audio filepath, supporting .WAV format only
         """
-        pass
-    
+        fs, data = wavfile.read(filepath)
+        if fs != self._fs:
+            raise RuntimeError("The Sampling Rate of the Audio File is not compatible with the RIR.")
+        n_channel = data.shape[0]
+        if not np.issubdtype(data.dtype, np.floating):
+            data /= np.iinfo(data.dtype).max
+        return [self.apply2audio1D(data[:,i]) for i in range(n_channel)]
+
     def apply2audio_folder(self, audio_folder):
         """
+        Returns None but writing reverb audio files with float32 format
+        Args:
+           audio_foler: the clean audio folder
         """
-        pass
-
-
+        files = [f for f in os.listdir(audio_folder) if f.endswith('.wav') or f.endswith('.WAV')]
+        out_folder = self._spk_name + "_" + "_".join(self._mic_names)
+        os.makedirs(out_folder, exist_ok=True)
+        for k,filename in enumerate(files):
+            path = os.path.join(audio_folder, filename)
+            arr_list = self.apply2audio_file(path)
+            fname = ".".join(filename.split('.')[:-1])
+            for i, arr in enumerate(arr_list):
+                reverb_fname = fname + "_ch{:d}_Reverb.wav".format(i)
+                arr32 = arr.astype(np.float32)
+                wavfile.write(os.path.join(out_folder, reverb_fname), self._fs, arr32.T)
+            print('Writing {:.2f}%.'.format( (k+1.0) / len(files)))
+        
 
 class Field:
     """
