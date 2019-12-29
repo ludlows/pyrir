@@ -11,7 +11,9 @@ import numbers
 class Speaker:
     """
     Speaker class
-    
+    Args:
+            position : (x,y,z) or [x,y,z]
+            name     : speaker name, optional
     """
     _speaker_id = 0
     def __init__(self, position, name=None):
@@ -19,7 +21,6 @@ class Speaker:
         Args:
             position : (x,y,z)
             name     : speaker name
-            audio    : 1d numpy array 
         """
         if len(position) != 3:
             raise ValueError('The length of Speaker position should be 3.')

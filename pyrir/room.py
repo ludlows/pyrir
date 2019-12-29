@@ -14,6 +14,13 @@ from .speaker import Speaker
 class Room:
     """
     Room class
+    Args: 
+        size (meter):  (size_x, size_y, size_z) numerical tuple with length of 3
+                        size_x (meter): Room Length along X Axis
+                        size_y (meter): Room Length along Y Axis
+                        size_z (meter): Room Length along Z Axis
+        order       : integer value >= -1 (maximal), wall reflection order, optional
+        name        : str, optional
     """
     _room_id = 0
     def __init__(self, size, order=-1, name=None):
@@ -110,6 +117,13 @@ class Room:
 class ReverbRoom(Room):
     """
     Reverb Time Room class (Defined by T60) 
+    Args:
+        size:  (x,y,z) size of 3 dimensions 
+        rt60:  reverberation time   (second)
+        order: reflection order (default -1), options: 
+        name: str
+    Reference: rt60: the time required for the intensity of reflected sound rays
+                         to be down 60dB from thr direct path sound ray
     """
     def __init__(self, size, rt60, order=-1, name=None):
         """
@@ -134,6 +148,12 @@ class ReverbRoom(Room):
 class ReflectRoom(Room):
     """
     Reflection Coefficient Room class (Defined by Beta)
+    Args:
+        size:        (x,y,z) size of 3 dimensions 
+        beta_array:  reflection_coefficients (betaX1, betaX2, betaY1, betaY2, betaZ1, betaZ2)
+                        each value ranges from 0 to 1, [0,1]
+        order:       reflection order (default -1 as maximal), optional
+        name:        str, optional
     """
     def __init__(self, size, beta_array, order=-1, name=None):
         """
@@ -143,8 +163,6 @@ class ReflectRoom(Room):
                          each value ranges from 0 to 1, [0,1]
             order:       reflection order (default -1), options: 
             name:         str
-        Reference: rt60: the time required for the intensity of reflected sound rays
-                         to be down 60dB from thr direct path sound ray
         """
         if not len(beta_array) == 6:
             raise ValueError("The beta array should be with a length of 6.")

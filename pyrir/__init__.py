@@ -24,6 +24,12 @@ __all__ = [
 class RIR:
     """
     class for RIR (Room Impulse Response)
+    Args:
+        fs            : integer Sampling rate
+        rir_array     : numpy array (n_channel, length of RIR)
+        name          : str
+        channel_names : list or tuple of str
+        speaker_name  : str
     """
     _rir_id = 0
     def __init__(self, fs, rir_array, channel_names, speaker_name, name=None):
@@ -37,7 +43,7 @@ class RIR:
         """ 
         self._rir_array = rir_array 
         self._fs = fs
-        if len(rir_array.shape == 2):
+        if len(rir_array.shape) == 2:
             self._n_mic, self._n_sample = rir_array.shape
         else:
             raise ValueError('The shape of RIR Numpy Array should be 2')
@@ -80,14 +86,22 @@ class RIR:
         fs, data = wavfile.read(filepath)
         if fs != self._fs:
             raise RuntimeError("The Sampling Rate of the Audio File is not compatible with the RIR.")
-        n_channel = data.shape[0]
+        if len(data.shape) == 1:
+            n_channel = 1
+        elif len(data.shape) == 2:
+            n_channel = data.shape[0]
+        else:
+            raise ValueError('The Channel Number of Input Audio File is Wrong.')
         if not np.issubdtype(data.dtype, np.floating):
-            data /= np.iinfo(data.dtype).max
+            data = data.astype(np.float32) / np.iinfo(data.dtype).max 
+        if n_channel == 1:
+            return [self.apply2audio1D(data)]
         return [self.apply2audio1D(data[:,i]) for i in range(n_channel)]
 
     def apply2audio_folder(self, audio_folder):
         """
         Returns None but writing reverb audio files with float32 format
+            Supporting WAV format only for now
         Args:
            audio_foler: the clean audio folder
         """
@@ -108,6 +122,12 @@ class RIR:
 class Field:
     """
     class for Sound (Acoustic) Field 
+    Args: 
+        fs     (Hz)      : integer, Sampling Rate
+        n_sample         : integer, the length of FIR (Finite Impulse Response)
+        sound_speed (m/s): double,  the speed of sound
+        high_pass        : bool,  enable high pass filter or not
+        name             : str
     """
     _field_id = 0
     def __init__(self, fs, n_sample=1024, sound_speed=340, high_pass=True, name=None):
@@ -180,6 +200,7 @@ class Field:
                 mic_elevation = mic_elevation / 180.0 * np.pi 
                 rir_numpy = rir(
                     self._sound_speed,
+                    self._fs,
                     room_size,
                     mic_pos,
                     src_pos,

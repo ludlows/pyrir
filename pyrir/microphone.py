@@ -14,6 +14,8 @@ from .speaker import Speaker
 class Microphone:
     """
     Base Class for microphones
+    Args:
+        position: tuple (x,y,z) or list [x,y,z]
     """
     _mic_id = 0
     def __init__(self, position, name=None):
@@ -59,11 +61,14 @@ class Microphone:
 class Omni(Microphone):
     """
     class for omnidirectional microphone
+    Args:
+        position: [x,y,z] or (x,y,z) in meter
+        name    : str, optional
     """
     def __init__(self, position, name=None):
         """
         position: [x,y,z] or (x,y,z) in meter
-        name    : str
+        name    : str, optional
         """
         super(Omni, self).__init__(position, name)
         self._name += "_Omni"
@@ -72,6 +77,10 @@ class Omni(Microphone):
 class Hypercardioid(Microphone):
     """
     class for hypercardioid microphone
+    Args:
+        position:     [x,y,z] or (x,y,z) in meter
+        orientation:  (azimuth_deg, elevation_deg) in degree
+        name       :  str, optional
     """
     def __init__(self, position, orientation, name=None):
         """
@@ -99,6 +108,10 @@ class Hypercardioid(Microphone):
 class Cardioid(Microphone):
     """
     class for Cardioid microphone
+    Args:
+        position:     [x,y,z] or (x,y,z) in meter
+        orientation:  (azimuth_deg, elevation_deg) in degree
+        name       :  str, optional
     """
     def __init__(self, position, orientation, name=None):
         """
@@ -126,6 +139,10 @@ class Cardioid(Microphone):
 class Dipole(Microphone):
     """
     class for Dipole microphone
+     Args:
+        position:     [x,y,z] or (x,y,z) in meter
+        orientation:  (azimuth_deg, elevation_deg) in degree
+        name       :  str, optional
     """
     def __init__(self, position, orientation, name=None):
         """
@@ -153,6 +170,10 @@ class Dipole(Microphone):
 class Subcardioid(Microphone):
     """
     class for Subcardioid microphone
+    Args:
+        position:     [x,y,z] or (x,y,z) in meter
+        orientation:  (azimuth_deg, elevation_deg) in degree
+        name       :  str, optional
     """
     def __init__(self, position, orientation, name=None):
         """
