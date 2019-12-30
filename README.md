@@ -9,9 +9,18 @@ scipy
 cython
 ```
 
+# install
+```bash
+pip install pyrir
+```
+or
+```bash
+pip install https://github.com/ludlows/pyrir/archive/master.zip
+```
+
 # example 
 
-It is supporting Omni, Dipole, Cardioid, Subcardioid, Hypercardioid Beam Patterns. 
+It is supporting Omni, Dipole, Cardioid, Subcardioid and Hypercardioid Beam Patterns. 
 
 ## Microphone Array with 1 Speaker
 ```python
@@ -90,8 +99,9 @@ room.setup_mic_speaker([dipole, omni], [speaker1, speaker2])
 rir_spk1, rir_spk2 = field.compute_rir(room)
 
 # merge reverb voice from 2 speakers 
-# (speaker1_clean.wav and speaker2_clean.wav should have same number of channels)
-merged_channels = [reverb1[:, :min(reverb1.shape[1], reverb2.shape[1])] + reverb2[:,:min(reverb1.shape[1], reverb2.shape[1])] for reverb1, reverb2 in zip(rir_spk1.apply2audio_file('spk1.wav'), rir_spk2.apply2audio_file('spk2.wav'))]
+# (spk1.wav and spk2.wav should have same number of channels)
+merged_channels = [
+    reverb1[:, :min(reverb1.shape[1], reverb2.shape[1])] + reverb2[:,:min(reverb1.shape[1], reverb2.shape[1])] for reverb1, reverb2 in zip(rir_spk1.apply2audio_file('spk1.wav'), rir_spk2.apply2audio_file('spk2.wav'))]
 ```
 
 # Reference Code

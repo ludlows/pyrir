@@ -19,13 +19,14 @@ extensions = [
 ]
 setup(
     name="pyrir",
-    version="0.0.0",
+    version="0.0.1",
     author="ludlows",
-    description="Light Python Package for Room Impulse Response",
+    description="Lite Package for Room Impulse Response",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ludlows/pyrir",
     packages=find_packages(),
+    package_data={'pyrir':["cyrir/cyrir.pyx", "cyrir/rir.c"]},
     cmdclass = {'build_ext': build_ext},
     ext_modules=cythonize(extensions),
     setup_requires=['numpy', 'scipy', 'cython'],
